@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+require 'optparse'
+
+require 'red_matter'
+
+options = {
+  filename: File.expand_path('./Redfile')
+}
+
+FILENAME = File.expand_path('./Redfile')
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename __FILE__} [options]"
+
+  opts.separator ''
+  opts.separator 'Available options:'
+
+  opts.on('-f', '--file [FILE]', 'Use given file instead of Redfile') do |f|
+    options[:filename] = File.expand_path(f)
+  end
+
+  opts.on('-v', '--verbose', 'Run verbosely') do
+    options[:verbose] = true
+  end
+
+  opts.on_tail('-h', '--help', 'Show this message') do
+    puts opts
+    exit
+  end
+
+  opts.on_tail('-v', '--version', 'Print version') do
+    puts RedMatter::VERSION
+    exit
+  end
+end
+parser.parse!
+
+cl = RedMatter::Loader.new
+cl.verbose = true
+
+dat = File.read(options[:filename])
+
+cl.load(dat)
